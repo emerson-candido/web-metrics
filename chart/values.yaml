@@ -1,0 +1,57 @@
+endpoints:
+  - "https://github.com"
+
+envs:
+  - name: "RUST_LOG"
+    value: "info"
+
+image: "ecandido/web-metrics:tagname"
+imagePullPolicy: "IfNotPresent"
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 9898
+  initialDelaySeconds: 30
+  timeoutSeconds: 10
+
+port:
+  name: "http"
+  number: 9898
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 9898
+  initialDelaySeconds: 30
+  timeoutSeconds: 10
+
+replicas: 1
+
+retry: 10
+
+resources:
+  limits:
+    memory: 32Mi
+  requests:
+    cpu: 50m
+    memory: 32Mi
+
+rollingUpdate:
+  maxSurge: 1
+  maxUnavailable: 0
+
+securityContext:
+  allowPrivilegeEscalation: false
+  fsGroup: 1000
+  runAsGroup: 1000
+  runAsNonRoot: true
+  runAsUser: 1000
+
+service:
+  protocol: "TCP"
+  type: "ClusterIP"
+
+settingsFile:
+  name: "settings.yaml"
+  path: "/tmp"

@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "default.name" . }}
+  labels:
+    {{- include "default.labels" . | indent 4 }}
+data:
+  {{ .Values.settingsFile.name }}: |
+    endpoints:
+    {{- range .Values.endpoints }}
+      - {{ . | quote }}
+    {{- end }}
+    port: {{ .Values.port.number }}
+    retry: {{ .Values.retry }}

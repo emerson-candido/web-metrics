@@ -1,0 +1,6 @@
+apiVersion: v2
+appVersion: 1.0.0
+name: web-metrics
+version: 1.0.0
+maintainers:
+  - name: Emerson Candido

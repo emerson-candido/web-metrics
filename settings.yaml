@@ -1,0 +1,6 @@
+endpoints:
+  - "https://github.com"
+
+port: 9898
+
+retry: 10

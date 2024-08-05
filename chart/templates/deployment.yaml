@@ -1,0 +1,62 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "default.name" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "default.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      {{- include "default.labels" . | indent 6 }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.rollingUpdate.maxUnavailable }}
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        {{- include "default.labels" . | indent 8 }}
+    spec:
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsGroup: {{ .Values.securityContext.runAsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      containers:
+        - name: {{ .Release.Name | quote }}
+          image: {{ .Values.image | quote }}
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          env:
+          {{- range .Values.envs }}
+            - name: {{ .name | quote }}
+              value: {{ .value | quote }}
+          {{- end }}
+            - name: SETTINGS_FILEPATH
+              value: "{{ .Values.settingsFile.path }}/{{ .Values.settingsFile.name }}"
+          securityContext:
+            allowPrivilegeEscalation: {{ .Values.securityContext.allowPrivilegeEscalation }}
+            runAsGroup: {{ .Values.securityContext.runAsGroup }}
+            runAsNonRoot: {{ .Values.securityContext.runAsNonRoot }}
+            runAsUser: {{ .Values.securityContext.runAsUser }}
+          ports:
+            - name: {{ .Values.port.name | quote }}
+              containerPort: {{ .Values.port.number }}
+              protocol: {{ .Values.service.protocol | quote }}
+          livenessProbe:
+          {{- toYaml .Values.livenessProbe | trim | nindent 12 }}
+          readinessProbe:
+          {{- toYaml .Values.readinessProbe | trim | nindent 12 }}
+        {{- with .Values.resources }}
+          resources: {{ toYaml . | nindent 12 }}
+        {{- end }}
+          volumeMounts:
+            - mountPath: {{ .Values.settingsFile.path | quote }}
+              name: settings
+      volumes:
+        - name: settings
+          configMap:
+            name: {{ include "default.name" . }}
+
