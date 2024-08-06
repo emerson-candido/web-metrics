@@ -20,6 +20,16 @@ jobs:
       - name: Set up Make
         run: sudo apt-get install -y make
 
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      - name: Set TERM environment variable
+        run: echo "TERM=xterm" >> $GITHUB_ENV
+
       - name: Check code quality
         run: make check
 
