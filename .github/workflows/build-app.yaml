@@ -1,0 +1,76 @@
+name: web-metrics application build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validation:
+    runs-on: ubuntu-22.04
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Check code quality
+        run: make check
+
+      - name: Check unittest
+        run: make test
+
+      - name: Push image
+        run: make docker-image-push
+
+  release:
+    runs-on: ubuntu-22.04
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Push latest version to docker registry
+        run: make docker-release-push
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Make
+        run: sudo apt-get install -y make
+
+      - name: Get version from Makefile
+        id: get_version
+        run: |
+          VERSION=$(make app-version)
+          echo "::set-output name=version::${VERSION}"
+
+      - name: Generate release file
+        run: make release
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_PAT }}
+        with:
+          tag_name: ${{ steps.get_version.outputs.version }}
+          release_name: ${{ steps.get_version.outputs.version }}
+          body: |
+            Release notes for ${{ steps.get_version.outputs.version }}.
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./target/x86_64-unknown-linux-musl/release/web_metrics
+          asset_name: target/x86_64-unknown-linux-musl/release/web_metrics
+          asset_content_type: application/octet-stream

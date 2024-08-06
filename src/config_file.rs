@@ -19,6 +19,10 @@ pub fn get_envs() -> Result<EnvsSettings, Box<dyn Error>>{
     let settings_filepath :String = env::var("SETTINGS_FILEPATH")
         .unwrap_or_else(|_| "settings.yaml".to_string());
 
+    if env::var("RUST_LOG").is_err() {
+        env::set_var("RUST_LOG", "info")
+    }
+
     Ok(EnvsSettings {
         settings_filepath,
     })

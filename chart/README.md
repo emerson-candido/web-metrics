@@ -7,7 +7,7 @@ This Helm Chart is designed to provision the application `web_metrics` on Kubern
 | Value                                      | Description                                                           | Default Value                  |
 |--------------------------------------------|-----------------------------------------------------------------------|--------------------------------|
 | `endpoints`                                | List of urls to collect metrics                                       | `Null`                         |
-| `envs`                                     | List of environment variables to be set                               | `RUST_LOG=info`                |
+| `envs`                                     | List of environment variables to be set                               | `Null`                         |
 | `image`                                    | Image path of the application                                         | `ecandido/web-metrics:tagname` |
 | `imagePullPolicy`                          | Default behavior to pull images                                       | `IfNotPresent`                 |
 | `livenessProbe.httpGet.path`               | Path to perform health check                                          | `/health`                      |
@@ -21,7 +21,7 @@ This Helm Chart is designed to provision the application `web_metrics` on Kubern
 | `readinessProbe.initialDelaySeconds`       | Time in seconds to wait before perform the check                      | `30`                           |
 | `readinessProbe.timeoutSeconds`            | Time in seconds to wait before perform a failure                      | `10`                           |
 | `replicas`                                 | Number of replicas to run on the Kubernetes `deployment`              | `1`                            |
-| `retry`                                    | Waiting time in seconds to perform the health check again             | `10`                           |
+| `retry`                                    | Waiting time in seconds to perform the health check again             | `30`                           |
 | `resources.limits.memory`                  | Memory limit allocated to the `pod`                                   | `32Mi`                         |
 | `resources.requests.cpu`                   | CPU requested to the `pod`                                            | `50m`                          |
 | `resources.requests.memory`                | Memory requested to the `pod`                                         | `32Mi`                         |
@@ -36,3 +36,4 @@ This Helm Chart is designed to provision the application `web_metrics` on Kubern
 | `service.Type`                             | Type of Kubernetes `service`                                          | `ClusterIP`                    |
 | `settingsFile.name`                        | Name of the settings file                                             | `settings.yaml`                |
 | `settingsFile.path`                        | Path that hosts the settings file                                     | `/tpm`                         |
+
