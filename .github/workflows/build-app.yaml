@@ -30,6 +30,9 @@ jobs:
       - name: Set TERM environment variable
         run: echo "TERM=xterm" >> $GITHUB_ENV
 
+      - name: Install rust target x86_64-unknown-linux-musl
+        run: rustup target add x86_64-unknown-linux-musl
+
       - name: Check code quality
         run: make check
 
@@ -46,6 +49,16 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      - name: Set TERM environment variable
+        run: echo "TERM=xterm" >> $GITHUB_ENV
 
       - name: Push latest version to docker registry
         run: make docker-release-push
