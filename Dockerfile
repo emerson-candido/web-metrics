@@ -12,4 +12,4 @@ COPY ./target/x86_64-unknown-linux-musl/release/$APP_NAME /usr/local/bin/
 
 USER $USER_UID
 
-ENTRYPOINT [ "${APP_NAME}" ]
+ENTRYPOINT ["/bin/sh", "-c", "$APP_NAME"]

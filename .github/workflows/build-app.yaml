@@ -38,11 +38,11 @@ jobs:
       - name: Install rust target x86_64-unknown-linux-musl
         run: rustup target add x86_64-unknown-linux-musl
 
-      #- name: Check code quality
-      #  run: make check
+      - name: Check code quality
+        run: make check
 
-      #- name: Check unittest
-      #  run: make test
+      - name: Check unittest
+        run: make test
 
       - name: Docker login
         env:
@@ -61,6 +61,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Set up Make
+        run: sudo apt-get install -y make
+
+      - name: Install dependencies for musl target
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y musl-tools
+
       - name: Set up Rust
         uses: actions-rs/toolchain@v1
         with:
@@ -71,14 +79,17 @@ jobs:
       - name: Set TERM environment variable
         run: echo "TERM=xterm" >> $GITHUB_ENV
 
+      - name: Install rust target x86_64-unknown-linux-musl
+        run: rustup target add x86_64-unknown-linux-musl
+
+      - name: Docker login
+        env:
+          DOCKER_HUB_PAT: ${{ secrets.DOCKER_HUB_PAT }}
+          PROJECT_NAME: ${{ secrets.PROJECT_NAME }}
+        run: make docker-login
+
       - name: Push latest version to docker registry
         run: make docker-release-push
-
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Make
-        run: sudo apt-get install -y make
 
       - name: Get version from Makefile
         id: get_version
