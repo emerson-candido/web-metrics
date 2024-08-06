@@ -1,9 +1,7 @@
 endpoints:
   - "https://github.com"
 
-envs:
-  - name: "RUST_LOG"
-    value: "info"
+envs: []
 
 image: "ecandido/web-metrics:tagname"
 imagePullPolicy: "IfNotPresent"
@@ -28,7 +26,7 @@ readinessProbe:
 
 replicas: 1
 
-retry: 10
+retry: 30
 
 resources:
   limits:

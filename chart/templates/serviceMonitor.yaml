@@ -14,4 +14,4 @@ spec:
   endpoints:
     - port: http
       path: /metrics
-      interval: 30s
+      interval: {{ .Values.retry }}

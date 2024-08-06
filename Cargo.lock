@@ -1483,7 +1483,7 @@ dependencies = [
 
 [[package]]
 name = "web_metrics"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "env_logger",
  "hyper 0.14.30",
