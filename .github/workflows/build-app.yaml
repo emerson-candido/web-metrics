@@ -44,7 +44,13 @@ jobs:
       #- name: Check unittest
       #  run: make test
 
-      - name: Push image
+      - name: Docker login
+        env:
+          DOCKER_HUB_PAT: ${{ secrets.DOCKER_HUB_PAT }}
+          PROJECT_NAME: ${{ secrets.PROJECT_NAME }}
+        run: make docker-login
+
+      - name: Build and push image
         run: make docker-image-push
 
   release:

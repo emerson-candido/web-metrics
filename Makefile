@@ -15,7 +15,7 @@ check:
 docker-image: release
 	docker image build -t ${PROJECT_NAME}/${APP_NAME}:${COMMIT_HASH} .
 
-docker-image-push: docker-image docker-login
+docker-image-push: docker-image
 	docker image push ${PROJECT_NAME}/${APP_NAME}:${COMMIT_HASH}
 
 docker-login:
@@ -25,7 +25,7 @@ docker-release: docker-image
 	docker image tag ${PROJECT_NAME}/${APP_NAME}:${COMMIT_HASH} ${PROJECT_NAME}/${APP_NAME}:${APP_VERSION}
 	docker image tag ${PROJECT_NAME}/${APP_NAME}:${APP_VERSION} ${PROJECT_NAME}/${APP_NAME}:latest
 
-docker-release-push: docker-release docker-login
+docker-release-push: docker-release
 	docker image push ${PROJECT_NAME}/${APP_NAME}:${APP_VERSION}
 	docker image push ${PROJECT_NAME}/${APP_NAME}:latest
 
